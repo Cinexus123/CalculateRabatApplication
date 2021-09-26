@@ -29,4 +29,7 @@ After entering the discount amount in the text field, the discount amount for ea
 
 The application has completed unit tests. They are available in the RabatTest.java class.
 
+- Security provided by JUnit tests and enum class to prevent bad input
+- Portability provided by generating a JAR file
+- Code quality, flexibility for expansion and speed were also ensured :)
 
