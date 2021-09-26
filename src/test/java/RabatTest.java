@@ -1,3 +1,4 @@
+import layout.RabatApplication;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,7 @@ public class RabatTest {
 
         assertNotNull(itemPrice);
         Assertions.assertNotEquals(800.0, itemPrice);
-        assertEquals(700.0, itemPrice);
+        assertEquals(1000.0, itemPrice);
     }
 
     @Test

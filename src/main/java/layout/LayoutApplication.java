@@ -1,23 +1,30 @@
 package layout;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LayoutApplication {
 
-    private JFrame frame;
+    private RabatApplication rabatApplication;
+
+    private JFrame frame = new JFrame("Panel");
     private JPanel panel = new JPanel();
 
-    private JLabel item1 = new JLabel("Przedmiot1");
-    private JLabel item2 = new JLabel("Przedmiot2");
-    private JLabel item3 = new JLabel("Przedmiot3");
-    private JLabel item4 = new JLabel("Przedmiot4");
-    private JLabel item5 = new JLabel("Przedmiot5");
+    private JLabel item1 = new JLabel("");
+    private JLabel item2 = new JLabel("");
+    private JLabel item3 = new JLabel("");
+    private JLabel item4 = new JLabel("");
+    private JLabel item5 = new JLabel("");
 
-    private JLabel item1Price = new JLabel("cena:");
-    private JLabel item2Price = new JLabel("cena:");
-    private JLabel item3Price = new JLabel("cena:");
-    private JLabel item4Price = new JLabel("cena:");
-    private JLabel item5Price = new JLabel("cena:");
+    private JLabel item1Price = new JLabel("");
+    private JLabel item2Price = new JLabel("");
+    private JLabel item3Price = new JLabel("");
+    private JLabel item4Price = new JLabel("");
+    private JLabel item5Price = new JLabel("");
 
     private JLabel item1PriceBeforeDiscount = new JLabel("");
     private JLabel item2PriceBeforeDiscount = new JLabel("");
@@ -25,23 +32,47 @@ public class LayoutApplication {
     private JLabel item4PriceBeforeDiscount = new JLabel("");
     private JLabel item5PriceBeforeDiscount = new JLabel("");
 
-    private JLabel item1PriceAfterDiscount = new JLabel("");
-    private JLabel item2PriceAfterDiscount = new JLabel("");
-    private JLabel item3PriceAfterDiscount = new JLabel("");
-    private JLabel item4PriceAfterDiscount = new JLabel("");
-    private JLabel item5PriceAfterDiscount = new JLabel("");
-
-    private JButton calculateRabat = new JButton("Calculate discount");
+    public JButton calculateRabat = new JButton("Calculate discount");
+    public JButton clearData = new JButton("Clear data");
     private JLabel rabatInfoLabel = new JLabel("Pass discount:");
     private JTextField rabatValue = new JTextField();
 
-    public void setLayout() {
-        frame = new JFrame("Panel");
-        frame.setVisible(true);
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    List<JLabel> itemsName = new ArrayList<>(Arrays.asList(item1, item2, item3, item4, item5));
+    List<JLabel> itemsPriceBeforeDiscount = new ArrayList<>(Arrays.asList(item1Price, item2Price, item3Price, item4Price, item5Price));
+    List<JLabel> itemsPriceAfterDiscount = new ArrayList<>(Arrays.asList(item1PriceBeforeDiscount, item2PriceBeforeDiscount,
+            item3PriceBeforeDiscount, item4PriceBeforeDiscount, item5PriceBeforeDiscount));
 
-        panel.setLayout(null);
+    List<String> productName;
+
+    public LayoutApplication(RabatApplication rabatApplication, Map<Long, Double> productDetails, List<String> productName) {
+        this.productName = productName;
+        this.rabatApplication = rabatApplication;
+        createLayout();
+        setLayout(productDetails, productName);
+    }
+
+    private void setLayout(Map<Long, Double> productDetails, List<String> productName) {
+        Iterator<Map.Entry<Long, Double>> entry = productDetails.entrySet().iterator();
+        int setHeight = 50;
+
+        for (int elementLayout = 0; elementLayout < productDetails.size(); elementLayout++) {
+            Map.Entry<Long, Double> pair = entry.next();
+
+            itemsName.get(elementLayout).setText(productName.get(elementLayout));
+            itemsPriceBeforeDiscount.get(elementLayout).setText(pair.getValue().toString());
+            itemsPriceAfterDiscount.get(elementLayout).setText("New price");
+
+            setHeight = setHeight + 50;
+        }
+    }
+
+
+    public void createLayout() {
+
+        frame.setSize(800, 600);
+        panel.setBorder(BorderFactory.createEmptyBorder(100, 300, 10, 30));
+        panel.setLayout(new GridLayout(-5, -3));
+
         item1.setBounds(150, 50, 100, 30);
         item2.setBounds(150, 100, 100, 30);
         item3.setBounds(150, 150, 100, 30);
@@ -60,40 +91,70 @@ public class LayoutApplication {
         item4PriceBeforeDiscount.setBounds(360, 200, 120, 30);
         item5PriceBeforeDiscount.setBounds(360, 250, 120, 30);
 
-        item1PriceAfterDiscount.setBounds(460, 50, 120, 30);
-        item2PriceAfterDiscount.setBounds(460, 100, 120, 30);
-        item3PriceAfterDiscount.setBounds(460, 150, 120, 30);
-        item4PriceAfterDiscount.setBounds(460, 200, 120, 30);
-        item5PriceAfterDiscount.setBounds(460, 250, 120, 30);
-
         rabatInfoLabel.setBounds(200, 350, 120, 30);
         rabatValue.setBounds(300, 350, 120, 30);
         calculateRabat.setBounds(460, 350, 160, 30);
+        clearData.setBounds(460, 450, 160, 30);
 
-        frame.add(item1);
-        frame.add(item2);
-        frame.add(item3);
-        frame.add(item4);
-        frame.add(item5);
-        frame.add(item1Price);
-        frame.add(item2Price);
-        frame.add(item3Price);
-        frame.add(item4Price);
-        frame.add(item5Price);
-        frame.add(item1PriceBeforeDiscount);
-        frame.add(item2PriceBeforeDiscount);
-        frame.add(item3PriceBeforeDiscount);
-        frame.add(item4PriceBeforeDiscount);
-        frame.add(item5PriceBeforeDiscount);
-        frame.add(item1PriceAfterDiscount);
-        frame.add(item2PriceAfterDiscount);
-        frame.add(item3PriceAfterDiscount);
-        frame.add(item4PriceAfterDiscount);
-        frame.add(item5PriceAfterDiscount);
-        frame.add(calculateRabat);
-        frame.add(rabatInfoLabel);
-        frame.add(rabatValue);
+        panel.add(item1);
+        panel.add(item2);
+        panel.add(item3);
+        panel.add(item4);
+        panel.add(item5);
+        panel.add(item1Price);
+        panel.add(item2Price);
+        panel.add(item3Price);
+        panel.add(item4Price);
+        panel.add(item5Price);
+        panel.add(item1PriceBeforeDiscount);
+        panel.add(item2PriceBeforeDiscount);
+        panel.add(item3PriceBeforeDiscount);
+        panel.add(item4PriceBeforeDiscount);
+        panel.add(item5PriceBeforeDiscount);
+        panel.add(calculateRabat);
+        panel.add(clearData);
+        panel.add(rabatInfoLabel);
+        panel.add(rabatValue);
 
-        frame.add(panel);
+        frame.add(panel, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
+        clearData.setEnabled(false);
+
+        calculateRabat.addActionListener(e -> {
+            Pattern p = Pattern.compile("([0-9])");
+            Matcher m = p.matcher(rabatValue.getText());
+            String discountValue = rabatValue.getText();
+
+            if (m.find()) {
+                if (discountValue.contains(",")) {
+                    discountValue = discountValue.replace(",", ".");
+                }
+                rabatApplication.rabat = Double.parseDouble(discountValue);
+                rabatApplication.initDiscount();
+                calculateRabat.setEnabled(false);
+                clearData.setEnabled(true);
+            } else {
+                System.out.println("String must contain only digit");
+            }
+        });
+
+        clearData.addActionListener(e -> {
+            for (int elementLayout = 0; elementLayout < productName.size(); elementLayout++)
+                itemsPriceAfterDiscount.get(elementLayout).setText("New price");
+
+            calculateRabat.setEnabled(true);
+            clearData.setEnabled(false);
+            rabatValue.setText("");
+            rabatApplication.clearData();
+        });
+    }
+
+    public void setPriceAfterDiscount(List<Double> priceAfterDiscount) {
+
+        for (int elementLayout = 0; elementLayout < priceAfterDiscount.size(); elementLayout++)
+            itemsPriceAfterDiscount.get(elementLayout).setText(priceAfterDiscount.get(elementLayout).toString());
     }
 }
